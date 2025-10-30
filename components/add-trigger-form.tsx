@@ -54,26 +54,30 @@ interface TriggerFormData {
   isTriggered: boolean;
 }
 
-const sourceOptions: Record<SourceType, { label: string; subTypes: string[] }> =
-  {
-    water_level_m: {
-      label: "Water Level (m)",
-      subTypes: ["warning_level", "danger_level"],
-    },
-    discharge_m3s: {
-      label: "Discharge (m³/s)",
-      subTypes: ["warning_discharge", "danger_discharge"],
-    },
-    rainfall_mm: {
-      label: "Rainfall (mm)",
-      subTypes: ["hourly", "daily"],
-    },
-    prob_flood: {
-      label: "Flood Probability",
-      subTypes: ["2_years_max_prob", "5_years_max_prob", "20_years_max_prob"],
-    },
-    "": { label: "", subTypes: [] },
-  };
+const sourceOptions: Record<SourceType, { label: string; sourceSubType: string; subTypes: string[] }> =
+{
+  water_level_m: {
+    label: 'DHM Water Level',
+    sourceSubType: "Water Level (m)",
+    subTypes: ["warning_level", "danger_level"],
+  },
+  discharge_m3s: {
+    label: "GFH",
+    sourceSubType: "Discharge (m³/s)",
+    subTypes: ["warning_discharge", "danger_discharge"],
+  },
+  rainfall_mm: {
+    label: "DHM Rainfall",
+    sourceSubType: "Rainfall (mm)",
+    subTypes: ["hourly", "daily"],
+  },
+  prob_flood: {
+    label: "Glofas",
+    sourceSubType: "Flood Probability",
+    subTypes: ["2_years_max_prob", "5_years_max_prob", "20_years_max_prob"],
+  },
+  "": { label: "", sourceSubType: "", subTypes: [] },
+};
 
 const operators: { value: OperatorType; label: string }[] = [
   { value: ">", label: "Greater than (>)" },
@@ -272,9 +276,9 @@ export function AddTriggerForm() {
                 <SelectContent>
                   {Object.entries(sourceOptions)
                     .filter(([key]) => key !== "")
-                    .map(([key, { label }]) => (
+                    .map(([key, { label, sourceSubType }]) => (
                       <SelectItem key={key} value={key}>
-                        {label}
+                        {label} - {sourceSubType}
                       </SelectItem>
                     ))}
                 </SelectContent>
@@ -357,8 +361,8 @@ export function AddTriggerForm() {
                         Generated Expression:
                       </p>
                       <code className="text-sm font-mono">
-                        {formData.sourceSubType} {formData.operator}{" "}
-                        {formData.value}
+                        {formData.source}  {formData.operator}{" "}
+                        {formData.sourceSubType} ({formData.value})
                       </code>
                     </div>
                   )}

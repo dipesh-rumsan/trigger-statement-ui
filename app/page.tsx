@@ -19,11 +19,41 @@ export const getTriggers = async () => {
   return data;
 };
 
+const triggers = [
+  {
+    id: "1",
+    title: "High River Level Alert",
+    description: "Trigger when river level exceeds 5 meters",
+    isMandatory: true,
+    isTriggered: true,
+    triggerStatement: {
+      phase: "Alert",
+      riverBasin: "Ganges",
+      source: "Sensor Network",
+      expression: "river_level > 5",
+    },
+  },
+  {
+    id: "2",
+    title: "Moderate Rainfall Warning",
+    description: "Trigger when rainfall exceeds 100mm in 24 hours",
+    isMandatory: false,
+    isTriggered: false,
+    triggerStatement: {
+      phase: "Warning",
+      riverBasin: "Brahmaputra",
+      source: "Weather Station",
+      expression: "rainfall_24h > 100",
+    },
+  },
+];
+
 export default function HomePage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["triggers"],
     queryFn: getTriggers,
   });
+  /*
 
   if (error) {
     return (
@@ -47,7 +77,7 @@ export default function HomePage() {
       </div>
     );
   }
-
+*/
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -70,7 +100,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {data?.map((trigger) => (
+          {triggers?.map((trigger) => (
             <Card
               key={trigger.id}
               className="hover:shadow-lg transition-shadow"
@@ -128,7 +158,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        {data.length === 0 && (
+        {triggers.length === 0 && (
           <Card className="p-12 text-center">
             <p className="text-muted-foreground mb-4">
               No trigger statements found
